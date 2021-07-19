@@ -28,8 +28,6 @@ function draw() {
         strokeWeight(1)
         circle(coords[i].x, coords[i].y, 20);
         strokeWeight(2);
-        counterX += random(0.001, 0.01);
-        counterY += random(0.001, 0.01);
     }
     curveVertex(coords[coordsLen-1].x, coords[coordsLen-1].y)
     endShape();
