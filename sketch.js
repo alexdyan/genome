@@ -3,10 +3,7 @@ let coordsLen = 16;
 
 function setup() {
   createCanvas(600, 600);
-  background(245, 240, 240);
   noFill();
-  stroke(255, 43, 43);
-  strokeWeight(2);
 
   noiseDetail(24);
 
@@ -18,6 +15,11 @@ function setup() {
     coords.push(new Coordinate(random(100, 500), random(100, 500), hasFeathers));
   }
 
+}
+
+
+function draw() {
+    background(245, 240, 240);
 
     // cycle through the coordinates to build the curves
     beginShape();
@@ -25,12 +27,12 @@ function setup() {
     
     for (let i = 0; i < coordsLen - 1; i++) {
       stroke(255, 43, 43);
-      // coords[i].float();
+      strokeWeight(2); // this line isn't working
+      coords[i].float();
       curveVertex(coords[i].x, coords[i].y);
       // draw a circle on each data point
       strokeWeight(1)
       circle(coords[i].x, coords[i].y, 20);
-      strokeWeight(2);
     }
     curveVertex(coords[coordsLen-1].x, coords[coordsLen-1].y)
     endShape();
@@ -41,10 +43,6 @@ function setup() {
         coords[i].drawFeathers(coords[i+1].x, coords[i+1].y);
       }
     }
-}
-
-
-function draw() {
 
 }
 
@@ -57,6 +55,8 @@ class Coordinate {
     this.noiseOffsetX = random(1000);
     this.noiseOffsetY = random(1000);
     this.hasFeathers = hasFeathers;
+    this.numFeathers = random(1, 6);
+    this.featherOffset = random(-20, 20);
     this.cpx;
     this.cpy;
   }
@@ -84,11 +84,11 @@ class Coordinate {
     else
       this.cpy = this.y + calculateY;
 
-    for (let j = 0; j < random(1, 6); j++) {
+    for (let j = 0; j < this.numFeathers; j++) {
       stroke(0, 255, 0);
       strokeWeight(1);
       // bezier(x1, y1, cpx1, cpy1, cpx2, cpy2, x2, y2)
-      bezier(this.x, this.y, this.cpx, this.cpy, this.cpx + random(-50, 50), this.cpy + random(-50, 50), x2, y2);
+      bezier(this.x, this.y, this.cpx, this.cpy, this.cpx + (j*this.featherOffset), this.cpy - (j*this.featherOffset), x2, y2);
     }
   }
 }
