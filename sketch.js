@@ -1,8 +1,8 @@
 let coords = [];
-let coordsLen = 16;
+let coordsLen = 24;
 
 function setup() {
-  createCanvas(600, 600);
+  createCanvas(800, 800);
   noFill();
   noiseDetail(24);
   colorMode(HSB, 360, 100, 100);
@@ -10,15 +10,15 @@ function setup() {
   // fill the coordinates array with random data
   for (let i = 0; i < coordsLen; i++) {
     let hasFeathers = false;
-    if ( Math.ceil(random(2)) % 2 == 0 ) // test for an even number to determine feathers or not
+    if ( Math.ceil(random(100)) > 40 ) // 60% chance of getting feathers
       hasFeathers = true;
-    coords.push(new Coordinate(random(100, 500), random(100, 500), hasFeathers));
+    coords.push(new Coordinate(random(200, width-200), random(200, height-200), hasFeathers));
   }
 }
 
 
 function draw() {
-    background(0, 2, 96);
+    background(4, 2, 100);
 
     // cycle through the coordinates to build the curves
     beginShape();
@@ -26,7 +26,7 @@ function draw() {
     
     for (let i = 0; i < coordsLen - 1; i++) {
       stroke(0, 88, 94);
-      strokeWeight(3); // this line isn't working
+      strokeWeight(2); // this line isn't working
       coords[i].float();
       curveVertex(coords[i].x, coords[i].y);
       // draw a circle on each data point
@@ -92,7 +92,7 @@ class Coordinate {
       stroke(0, this.saturation + j*10, 95);
       strokeWeight(1);
       // bezier(x1, y1, cpx1, cpy1, cpx2, cpy2, x2, y2)
-      bezier(this.x, this.y, this.cpx + this.featherOffset, this.cpy + this.featherOffset, this.cpx - (j*this.featherOffset), this.cpy - (j*this.featherOffset), x2, y2);
+      bezier(this.x, this.y, this.cpx + this.featherOffset, this.cpy - this.featherOffset, this.cpx - (j*this.featherOffset), this.cpy + (j*this.featherOffset), x2, y2);
     }
   }
 }
