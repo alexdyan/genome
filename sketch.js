@@ -4,8 +4,8 @@ let coordsLen = 16;
 function setup() {
   createCanvas(600, 600);
   noFill();
-
   noiseDetail(24);
+  colorMode(HSB, 360, 100, 100);
 
   // fill the coordinates array with random data
   for (let i = 0; i < coordsLen; i++) {
@@ -19,20 +19,21 @@ function setup() {
 
 
 function draw() {
-    background(245, 240, 240);
+    background(0, 2, 96);
 
     // cycle through the coordinates to build the curves
     beginShape();
     curveVertex(coords[0].x, coords[0].y);
     
     for (let i = 0; i < coordsLen - 1; i++) {
-      stroke(255, 43, 43);
-      strokeWeight(2); // this line isn't working
+      stroke(0, 83, 84);
+      strokeWeight(3); // this line isn't working
       coords[i].float();
       curveVertex(coords[i].x, coords[i].y);
       // draw a circle on each data point
-      strokeWeight(1)
-      circle(coords[i].x, coords[i].y, 20);
+      // strokeWeight(1)
+      // circle(coords[i].x, coords[i].y, 20);
+      // strokeWeight(3)
     }
     curveVertex(coords[coordsLen-1].x, coords[coordsLen-1].y)
     endShape();
@@ -55,15 +56,17 @@ class Coordinate {
     this.noiseOffsetX = random(1000);
     this.noiseOffsetY = random(1000);
     this.hasFeathers = hasFeathers;
-    this.numFeathers = random(1, 6);
+    this.numFeathers = random(2, 8);
     this.featherOffset = random(-20, 20);
     this.cpx;
     this.cpy;
+    this.saturation = random(20, 80);
   }
   
   float() {
-      let moveX = map( noise(this.noiseOffsetX), 0, 1, -1, 1 );
-      let moveY = map( noise(this.noiseOffsetY), 0, 1, -1, 1 );
+    // make the coordinates float around using Perlin noise
+      let moveX = map( noise(this.noiseOffsetX), 0, 1, -0.7, 0.7 );
+      let moveY = map( noise(this.noiseOffsetY), 0, 1, -0.7, 0.7 );
       this.x += moveX;
       this.y += moveY;
       this.noiseOffsetX += this.interval;
@@ -84,11 +87,13 @@ class Coordinate {
     else
       this.cpy = this.y + calculateY;
 
+
+    // draw the feathers here
     for (let j = 0; j < this.numFeathers; j++) {
-      stroke(0, 255, 0);
+      stroke(0, this.saturation + j*10, 95);
       strokeWeight(1);
       // bezier(x1, y1, cpx1, cpy1, cpx2, cpy2, x2, y2)
-      bezier(this.x, this.y, this.cpx, this.cpy, this.cpx + (j*this.featherOffset), this.cpy - (j*this.featherOffset), x2, y2);
+      bezier(this.x, this.y, this.cpx + this.featherOffset, this.cpy + this.featherOffset, this.cpx - (j*this.featherOffset), this.cpy - (j*this.featherOffset), x2, y2);
     }
   }
 }
