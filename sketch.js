@@ -14,7 +14,6 @@ function setup() {
       hasFeathers = true;
     coords.push(new Coordinate(random(100, 500), random(100, 500), hasFeathers));
   }
-
 }
 
 
@@ -26,7 +25,7 @@ function draw() {
     curveVertex(coords[0].x, coords[0].y);
     
     for (let i = 0; i < coordsLen - 1; i++) {
-      stroke(0, 83, 84);
+      stroke(0, 88, 94);
       strokeWeight(3); // this line isn't working
       coords[i].float();
       curveVertex(coords[i].x, coords[i].y);
@@ -60,7 +59,7 @@ class Coordinate {
     this.featherOffset = random(-20, 20);
     this.cpx;
     this.cpy;
-    this.saturation = random(20, 80);
+    this.saturation = random(20, 70);
   }
   
   float() {
