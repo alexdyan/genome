@@ -1,0 +1,7 @@
+Next Steps for Genome Visualization
+
+- have the coordinates be placed closer together to avoid intense direction and distance changes between them (think thread or spaghetti on a table)
+
+- have bezier curves follow the main curve splines (look at more detailed bezier and curve functions to do this)
+
+- function to draw/create a point on the line given any percentage (0-1)

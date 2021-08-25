@@ -1,5 +1,6 @@
 let coords = [];
 let coordsLen = 24;
+let offset = 50;
 
 function setup() {
   createCanvas(800, 800);
@@ -7,12 +8,17 @@ function setup() {
   noiseDetail(24);
   colorMode(HSB, 360, 100, 100);
 
+  let currentX = width/2
+  let currentY = height/2
+
   // fill the coordinates array with random data
   for (let i = 0; i < coordsLen; i++) {
     let hasFeathers = false;
     if ( Math.ceil(random(100)) > 40 ) // 60% chance of getting feathers
       hasFeathers = true;
-    coords.push(new Coordinate(random(200, width-200), random(200, height-200), hasFeathers));
+    coords.push(new Coordinate(currentX, currentY, hasFeathers));
+    currentX = random(currentX-offset, currentX + offset);
+    currentY = random(currentY-offset, currentY + offset);
   }
 }
 
@@ -26,13 +32,13 @@ function draw() {
     
     for (let i = 0; i < coordsLen - 1; i++) {
       stroke(0, 88, 94);
-      strokeWeight(2); // this line isn't working
+      strokeWeight(2);
       coords[i].float();
       curveVertex(coords[i].x, coords[i].y);
-      // draw a circle on each data point
-      // strokeWeight(1)
-      // circle(coords[i].x, coords[i].y, 20);
-      // strokeWeight(3)
+
+      if (i != coordsLen-2) {
+        coords[i].stayClose(coords[i+1].x, coords[i+1].y);
+      }
     }
     curveVertex(coords[coordsLen-1].x, coords[coordsLen-1].y)
     endShape();
@@ -43,7 +49,21 @@ function draw() {
         coords[i].drawFeathers(coords[i+1].x, coords[i+1].y);
       }
     }
+    choosePoint(0.25);
+}
 
+
+// curvePoint can do percentages between 2 coords only, so to find a percentage of the whole line,
+// do division on coordsLen to narrow which 2 points you have to search between
+function choosePoint(percentage) {
+  let closestPoint = coordsLen / (1 / percentage);
+  let index1 = Math.floor(closestPoint);
+  let index2 = Math.floor(closestPoint + 1);
+  let x = curvePoint(coords[index1 - 1].x, coords[index1].x, coords[index2].x, coords[index2 + 1].x, percentage);
+  let y = curvePoint(coords[index1 - 1].y, coords[index1].y, coords[index2].y, coords[index2 + 1].y, percentage);
+  stroke(230, 100, 100)
+  strokeWeight(2)
+  circle(x, y, 10);
 }
 
 
@@ -70,6 +90,18 @@ class Coordinate {
       this.y += moveY;
       this.noiseOffsetX += this.interval;
       this.noiseOffsetY += this.interval;
+  }
+
+  stayClose(x2, y2) {
+    if (dist(this.x, this.y, x2, y2) > 200) {
+      let xDesired = x2;
+      let yDesired = y2;
+      let xDist = xDesired - this.x;
+      let yDist = yDesired - this.y;
+      this.x += 0.01 * xDist;
+      this.y += 0.01 * yDist;
+    }
+
   }
 
   drawFeathers(x2, y2) {
